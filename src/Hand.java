@@ -1,5 +1,3 @@
-import Enums.Suit;
-
 import java.util.*;
 
 public class Hand {
@@ -28,11 +26,10 @@ public class Hand {
         hand.remove(new CustomKey(targetCard));
         return targetCard;
     }
-    public List<Card> discardMatchingPair(Player player,CustomKey key){
+    public void discardMatchingPair(Player player, CustomKey key){
         List<Card> discarded = hand.get(key);
         hand.remove(key);
         System.out.println(player.getName() + " discarded a pair of (" + discarded.get(0)+ " , "+discarded.get(1)+")");
-        return discarded;
     }
     public boolean hasMatchFor(CustomKey key){
         return hand.containsKey(key) && hand.get(key).size() == 2 ;
