@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -12,28 +11,30 @@ public class Game extends Thread{
 
     @Override
     public void run() {
-        GameState gameState = GameState.getInstance();
+        GameManager gameManager = GameManager.getInstance();
 
         List<Player> players = new ArrayList<>();
         for(int i = 1 ; i < 5 ; i++){
-            players.add(new Player("P"+i,gameState));
+            players.add(new Player("P"+i, gameManager));
         }
-        gameState.initializeTurnQueue(players);
+        gameManager.initializeTurnQueue(players);
         deck.initializeCards();
         deck.shuffle();
 
         dealCards(players,deck);
-
+        System.out.println("------------ Game started ------------");
+        System.out.println("No. of players : " + gameManager.getNoOfPlayers());
+        System.out.println("First ,discarding matching cards simultaneously, then start taking turns  : ");
         for(Player player : players){
             player.start();
         }
         try {
-            gameState.waitForGameEnd();
+            gameManager.waitForGameEnd();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("game ended");
-        System.out.println("The Old Maid is "+gameState.getLoser().getName());
+        System.out.println("------------ Game Over ------------");
+        System.out.println("The Old Maid is "+ gameManager.getLoser().getName());
     }
 
     public void dealCards(List<Player> players , Deck deck){
@@ -41,10 +42,10 @@ public class Game extends Thread{
         // but I want to imitate the real game as much as possible (1 card each at a time)
         for(int i = 0 ; i < 13 ; i++){
             for(Player player : players){
-                player.addToHand(deck.getTopCard());
+                player.getHand().addToHand(deck.getTopCard());
             }
         }
         Random random = new Random();
-        players.get(random.nextInt(players.size())).addToHand(deck.getTopCard());
+        players.get(random.nextInt(players.size())).getHand().addToHand(deck.getTopCard());
     }
 }

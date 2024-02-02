@@ -34,4 +34,7 @@ public abstract class Card {
         else
             return ((RankedCard) card).getRank().toString();
     }
+    public static boolean isTheJoker(Card targetCard){
+        return targetCard.getSuit() == Suit.JOKER;
+    }
 }

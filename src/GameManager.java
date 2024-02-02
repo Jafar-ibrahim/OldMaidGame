@@ -1,19 +1,19 @@
 import java.util.*;
 
-public class GameState {
-    private static GameState instance;
+public class GameManager {
+    public final Deque<Player> playerTurnQueue ;
     private boolean gameOver;
-    private Player loser; // Store the loser for announcement
-    public final Deque<Player> playerTurnQueue ; // Queue for player turns
+    private Player loser; // store the loser for announcement
+    private static GameManager instance;
 
 
-    private GameState() {
+    private GameManager() {
         playerTurnQueue = new LinkedList<>();
     }
 
-    public static GameState getInstance() {
+    public static GameManager getInstance() {
         if(instance == null)
-            instance = new GameState();
+            instance = new GameManager();
         return instance;
     }
 
@@ -33,7 +33,7 @@ public class GameState {
         return loser;
     }
     public synchronized void appendPlayerToQueue(Player player) {
-        playerTurnQueue.offer(player); // Add player to the end of the queue
+        playerTurnQueue.offer(player);
     }
 
     public synchronized void removePlayerFromQueue(Player player) {
@@ -41,11 +41,11 @@ public class GameState {
         notifyAll();
     }
     public synchronized void initializeTurnQueue(List<Player> players) {
-        playerTurnQueue.addAll(players); // Add all players to the queue initially
+        playerTurnQueue.addAll(players);
     }
 
     public synchronized Player getCurrentPlayer() {
-        return playerTurnQueue.peek(); // Get the player at the front of the queue without removing them
+        return playerTurnQueue.peek();
     }
 
     public synchronized void nextTurn() {
@@ -54,10 +54,10 @@ public class GameState {
     }
     public synchronized Card drawCardFromLastPlayer(){
         Player lastPlayer = getLastPlayerInQueue();
-        System.out.println("debug : " + lastPlayer.getName());
+        if(lastPlayer.getHand().discardedAllCards()) return null;
         Random random = new Random();
-        int n = random.nextInt(lastPlayer.getHandSize());
-        return lastPlayer.giveNthCardFromHand(n);
+        int n = random.nextInt(lastPlayer.getHand().getHandSize());
+        return lastPlayer.getHand().giveNthCardFromHand(n);
     }
     public synchronized boolean isMyTurn(Player player) {
         return getCurrentPlayer() == player;
@@ -87,5 +87,25 @@ public class GameState {
     public boolean playerHasRemainingTurns(Player player){
         return playerTurnQueue.contains(player);
     }
+    public void advancePlayerForward(Player player){
+        playerTurnQueue.addFirst(player);
+    }
 
+    public boolean checkIfPlayerLost(Player player){
+        if (getNoOfPlayers() == 1) {
+            notifyGameOver(player);
+            return true;
+        }
+        return false;
+    }
+    // If a player wins because another player took his last card ,
+    // he'll still be waiting for his turn ,so his turn must be consumed
+    // instantly so that no other player will mistake him for an active player and try
+    // to draw a card from him. ( to avoid another player acting before the winning player exits)
+    public void consumeWinnerEmptyTurn(Player currentPlayer, Player winner){
+        removePlayerFromQueue(currentPlayer);
+        removePlayerFromQueue(winner);
+        advancePlayerForward(winner);
+        notifyAll();
+    }
 }
