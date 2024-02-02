@@ -20,7 +20,7 @@ public class GameState {
     public synchronized void notifyGameOver(Player loser) {
         this.gameOver = true;
         this.loser = loser;
-        notify(); // Notify waiting GameManager thread
+        notifyAll(); // Notify waiting GameManager thread
     }
 
     public synchronized void waitForGameEnd() throws InterruptedException {
@@ -53,10 +53,10 @@ public class GameState {
         notifyAll();
     }
     public synchronized Card drawCardFromLastPlayer(){
-        Player lastPlayer = playerTurnQueue.peekLast();
+        Player lastPlayer = getLastPlayerInQueue();
+        System.out.println("debug : " + lastPlayer.getName());
         Random random = new Random();
         int n = random.nextInt(lastPlayer.getHandSize());
-
         return lastPlayer.giveNthCardFromHand(n);
     }
     public synchronized boolean isMyTurn(Player player) {
@@ -81,5 +81,11 @@ public class GameState {
         this.gameOver = gameOver;
     }
 
+    public Player getLastPlayerInQueue(){
+        return playerTurnQueue.getLast();
+    }
+    public boolean playerHasRemainingTurns(Player player){
+        return playerTurnQueue.contains(player);
+    }
 
 }

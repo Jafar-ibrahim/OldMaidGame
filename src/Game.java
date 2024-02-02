@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Game extends Thread{
 
@@ -26,6 +27,13 @@ public class Game extends Thread{
         for(Player player : players){
             player.start();
         }
+        try {
+            gameState.waitForGameEnd();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("game ended");
+        System.out.println("The Old Maid is "+gameState.getLoser().getName());
     }
 
     public void dealCards(List<Player> players , Deck deck){
@@ -36,5 +44,7 @@ public class Game extends Thread{
                 player.addToHand(deck.getTopCard());
             }
         }
+        Random random = new Random();
+        players.get(random.nextInt(players.size())).addToHand(deck.getTopCard());
     }
 }

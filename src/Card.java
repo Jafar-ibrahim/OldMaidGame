@@ -12,19 +12,6 @@ public abstract class Card {
         this.suit = suit;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Card card = (Card) o;
-        return color == card.color && getNumberOrRank(this).equals(getNumberOrRank(card));
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(color, suit);
-    }
-
     public Color getColor() {
         return color;
     }

@@ -20,7 +20,7 @@ public class Deck {
     }
     public void initializeCards(){
 
-        for(int i = 2 ; i <= 9 ; i++){
+        for(int i = 2 ; i <= 10 ; i++){
             cards.add(new NumeralCard(Color.BLACK, Suit.SPADES,i));
             cards.add(new NumeralCard(Color.BLACK, Suit.CLUBS,i));
             cards.add(new NumeralCard(Color.RED, Suit.DIAMONDS,i));
@@ -38,6 +38,8 @@ public class Deck {
         }
 
         cards.add(new RankedCard(Color.NONE,Suit.JOKER,Rank.Joker));
+
+
     }
 
     public void shuffle(){

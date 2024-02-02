@@ -1,7 +1,7 @@
 package Enums;
 
 public enum Suit {
-    SPADES("♠"),HEARTS("♥"),CLUBS("♣"),DIAMONDS("♦"),JOKER(" ");
+    SPADES("♠"),HEARTS("♥"),CLUBS("♣"),DIAMONDS("♦"),JOKER("\uD83C\uDFAD");
     private final String symbol;
 
     Suit(String symbol) {
