@@ -45,11 +45,10 @@ public class Player extends Thread{
 
                 inputOutputManager.printPlayerTurnInfo(this);
 
-                if (gameManager.checkIfPlayerLost(this)) {
+                if(gameManager.gameOver())
                     break;
-                }
-                Card chosenCard = gameManager.drawCardFromLastPlayer();
 
+                Card chosenCard = gameManager.drawCardFromLastPlayer();
                 CustomKey chosenCardKey = new CustomKey(chosenCard);
                 hand.addToHand(chosenCard);
 

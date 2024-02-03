@@ -8,7 +8,6 @@ import java.util.concurrent.CountDownLatch;
 public class GameManager {
     private final int noOfPlayers;
     private final Deque<Player> playerTurnQueue ;
-    private boolean gameOver;
     private Player loser; // store the loser for announcement
     private final CountDownLatch concurrentDiscardCounter;
     private static GameManager instance;
@@ -24,10 +23,8 @@ public class GameManager {
             instance = new GameManager();
         return instance;
     }
-    public synchronized void notifyGameOver(Player loser) {
-        this.gameOver = true;
-        this.loser = loser;
-        notifyAll(); // to notify waiting OldMaidGame.GameManager thread
+    public boolean gameOver(){
+        return getCurrentNoOfPlayers() == 1;
     }
     public void notifyFinishedDiscarding(){
         concurrentDiscardCounter.countDown();
@@ -37,11 +34,6 @@ public class GameManager {
             concurrentDiscardCounter.await();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
-    }
-    public synchronized void waitForGameEnd() throws InterruptedException {
-        while (!gameOver) {
-            wait();
         }
     }
     public Player getLoser() {
@@ -89,13 +81,7 @@ public class GameManager {
     public void advancePlayerForward(Player player){
         playerTurnQueue.addFirst(player);
     }
-    public boolean checkIfPlayerLost(Player player){
-        if (getCurrentNoOfPlayers() == 1) {
-            notifyGameOver(player);
-            return true;
-        }
-        return false;
-    }
+
     // If a player wins because another player took his last card ,
     // he'll still be waiting for his turn ,so his turn must be consumed
     // instantly so that no other player will mistake him for an active player and try

@@ -3,6 +3,9 @@ package OldMaidGame;
 import OldMaidGame.CardsManagment.Deck;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class Game extends Thread{
 
     private final Deck deck;
@@ -28,14 +31,12 @@ public class Game extends Thread{
 
         dealCards(players,deck);
         inputOutputManager.printGameStart(noOfPlayers,deck.calculateNeededCards(noOfPlayers)+1);
+        ExecutorService executor = Executors.newFixedThreadPool(noOfPlayers);
         for(Player player : players){
-            player.start();
+            executor.execute(player);
         }
-        try {
-            gameManager.waitForGameEnd();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        executor.shutdown();
+        while (!executor.isTerminated()) {}
 
         inputOutputManager.announceLoser(gameManager.getLoser());
 
