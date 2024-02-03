@@ -1,51 +1,57 @@
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 public class GameManager {
-    public final Deque<Player> playerTurnQueue ;
+    private final int noOfPlayers;
+    private final Deque<Player> playerTurnQueue ;
     private boolean gameOver;
     private Player loser; // store the loser for announcement
+    private final CountDownLatch concurrentDiscardCounter;
     private static GameManager instance;
-
 
     private GameManager() {
         playerTurnQueue = new LinkedList<>();
+        InputOutputManager inputOutputManager = InputOutputManager.getInstance();
+        noOfPlayers = inputOutputManager.readNoOfPlayers();
+        concurrentDiscardCounter = new CountDownLatch(noOfPlayers);
     }
-
     public static GameManager getInstance() {
         if(instance == null)
             instance = new GameManager();
         return instance;
     }
-
     public synchronized void notifyGameOver(Player loser) {
         this.gameOver = true;
         this.loser = loser;
-        notifyAll(); // Notify waiting GameManager thread
+        notifyAll(); // to notify waiting GameManager thread
     }
-
+    public void notifyFinishedDiscarding(){
+        concurrentDiscardCounter.countDown();
+    }
+    public void waitForOthersToDiscard(){
+        try {
+            concurrentDiscardCounter.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public synchronized void waitForGameEnd() throws InterruptedException {
         while (!gameOver) {
             wait();
         }
     }
-
     public Player getLoser() {
         return loser;
     }
     public synchronized void appendPlayerToQueue(Player player) {
         playerTurnQueue.offer(player);
     }
-
     public synchronized void removePlayerFromQueue(Player player) {
         playerTurnQueue.remove(player);
         notifyAll();
     }
     public synchronized void initializeTurnQueue(List<Player> players) {
         playerTurnQueue.addAll(players);
-    }
-
-    public synchronized Player getCurrentPlayer() {
-        return playerTurnQueue.peek();
     }
 
     public synchronized void nextTurn() {
@@ -59,37 +65,28 @@ public class GameManager {
         int n = random.nextInt(lastPlayer.getHand().getHandSize());
         return lastPlayer.getHand().giveNthCardFromHand(n);
     }
-
     public synchronized void waitForTurn(Player player) throws InterruptedException {
         while (!playerTurnQueue.isEmpty() && !playerTurnQueue.peek().equals(player)) {
             wait();
         }
     }
-
     public void setLoser(Player loser) {
         this.loser = loser;
     }
-
     public int getNoOfPlayers(){
+        return noOfPlayers;
+    }
+    public int getCurrentNoOfPlayers(){
         return playerTurnQueue.size();
     }
-
-    public void setGameOver(boolean gameOver) {
-        this.gameOver = gameOver;
-    }
-
     public Player getLastPlayerInQueue(){
         return playerTurnQueue.getLast();
-    }
-    public boolean playerHasRemainingTurns(Player player){
-        return playerTurnQueue.contains(player);
     }
     public void advancePlayerForward(Player player){
         playerTurnQueue.addFirst(player);
     }
-
     public boolean checkIfPlayerLost(Player player){
-        if (getNoOfPlayers() == 1) {
+        if (getCurrentNoOfPlayers() == 1) {
             notifyGameOver(player);
             return true;
         }

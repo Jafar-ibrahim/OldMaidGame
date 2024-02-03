@@ -1,5 +1,4 @@
 import java.util.*;
-
 public class Game extends Thread{
 
     private final Deck deck;
@@ -14,8 +13,7 @@ public class Game extends Thread{
 
     @Override
     public void run() {
-        int noOfPlayers = inputOutputManager.readNoOfPlayers();
-
+        int noOfPlayers = gameManager.getNoOfPlayers();
         List<Player> players = new ArrayList<>();
         for(int i = 1 ; i <= noOfPlayers ; i++){
             players.add(new Player("Player "+i, gameManager));
@@ -25,7 +23,7 @@ public class Game extends Thread{
         deck.shuffle();
 
         dealCards(players,deck);
-        inputOutputManager.printGameStart(gameManager.getNoOfPlayers(),(deck.calculateNeededCards(noOfPlayers)+1));
+        inputOutputManager.printGameStart(noOfPlayers,deck.calculateNeededCards(noOfPlayers)+1);
         for(Player player : players){
             player.start();
         }
@@ -47,8 +45,11 @@ public class Game extends Thread{
                 player.getHand().addToHand(deck.getTopCard());
             }
         }
+        // to deal the one card left when one player has to have 1 more card than others
         if (players.size() * cardsPerPlayer < noOfCards)
             players.get(players.size()-1).getHand().addToHand(deck.getTopCard());
+        // cards number with joker is always odd , so one more card will be dealt to
+        // a random player
         Random random = new Random();
         players.get(random.nextInt(players.size())).getHand().addToHand(deck.getTopCard());
     }

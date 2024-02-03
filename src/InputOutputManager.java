@@ -34,8 +34,8 @@ public class InputOutputManager {
     }
 
     public void printPlayerTurnInfo(Player player){
-        System.out.println("-------------------------------------");
-        System.out.println(player.getName() + "'s turn");
+        System.out.println("=====================================");
+        System.out.println("-> "+player.getName() + "'s turn <-");
         System.out.print(player.getName()+"'s cards : ");
         printHand(player.getHand().getHandMap());
     }

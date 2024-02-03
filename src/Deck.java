@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Deck {
-    private List<Card> cards;
+    private final List<Card> cards;
     private static Deck instance;
 
     public Deck() {
@@ -56,8 +56,5 @@ public class Deck {
             excessCards--;
 
         return  52 - excessCards;
-    }
-    public int getNoOfCards(){
-        return cards.size();
     }
 }
