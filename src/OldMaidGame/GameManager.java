@@ -1,3 +1,7 @@
+package OldMaidGame;
+
+import OldMaidGame.Cards.Card;
+
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
@@ -23,7 +27,7 @@ public class GameManager {
     public synchronized void notifyGameOver(Player loser) {
         this.gameOver = true;
         this.loser = loser;
-        notifyAll(); // to notify waiting GameManager thread
+        notifyAll(); // to notify waiting OldMaidGame.GameManager thread
     }
     public void notifyFinishedDiscarding(){
         concurrentDiscardCounter.countDown();

@@ -1,4 +1,4 @@
-package Enums;
+package OldMaidGame.Enums;
 
 public enum Suit {
     SPADES("♠"),HEARTS("♥"),CLUBS("♣"),DIAMONDS("♦"),JOKER("\uD83C\uDFAD");

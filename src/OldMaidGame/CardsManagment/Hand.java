@@ -1,3 +1,9 @@
+package OldMaidGame.CardsManagment;
+
+import OldMaidGame.Cards.Card;
+import OldMaidGame.InputOutputManager;
+import OldMaidGame.Player;
+
 import java.util.*;
 
 public class Hand {

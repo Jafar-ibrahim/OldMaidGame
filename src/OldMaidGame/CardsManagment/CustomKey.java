@@ -1,4 +1,7 @@
-import Enums.Color;
+package OldMaidGame.CardsManagment;
+
+import OldMaidGame.Cards.Card;
+import OldMaidGame.Enums.Color;
 
 import java.util.Objects;
 

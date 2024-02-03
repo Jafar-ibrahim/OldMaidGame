@@ -1,6 +1,11 @@
-import Enums.Color;
-import Enums.Rank;
-import Enums.Suit;
+package OldMaidGame.CardsManagment;
+
+import OldMaidGame.Cards.Card;
+import OldMaidGame.Cards.NumeralCard;
+import OldMaidGame.Cards.RankedCard;
+import OldMaidGame.Enums.Color;
+import OldMaidGame.Enums.Rank;
+import OldMaidGame.Enums.Suit;
 
 import java.util.ArrayList;
 import java.util.Collections;

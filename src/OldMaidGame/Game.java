@@ -1,3 +1,7 @@
+package OldMaidGame;
+
+import OldMaidGame.CardsManagment.Deck;
+
 import java.util.*;
 public class Game extends Thread{
 

@@ -1,5 +1,7 @@
-import Enums.Color;
-import Enums.Suit;
+package OldMaidGame.Cards;
+
+import OldMaidGame.Enums.Color;
+import OldMaidGame.Enums.Suit;
 
 public class NumeralCard extends Card {
 

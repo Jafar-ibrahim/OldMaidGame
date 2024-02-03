@@ -1,3 +1,9 @@
+package OldMaidGame;
+
+import OldMaidGame.Cards.Card;
+import OldMaidGame.CardsManagment.CustomKey;
+import OldMaidGame.CardsManagment.Hand;
+
 public class Player extends Thread{
 
     private final Hand hand;

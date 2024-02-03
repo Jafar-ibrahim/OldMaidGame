@@ -1,7 +1,7 @@
-import Enums.Color;
-import Enums.Suit;
+package OldMaidGame.Cards;
 
-import java.util.Objects;
+import OldMaidGame.Enums.Color;
+import OldMaidGame.Enums.Suit;
 
 public abstract class Card {
     private Color color;

@@ -1,6 +1,8 @@
-import Enums.Color;
-import Enums.Rank;
-import Enums.Suit;
+package OldMaidGame.Cards;
+
+import OldMaidGame.Enums.Color;
+import OldMaidGame.Enums.Rank;
+import OldMaidGame.Enums.Suit;
 
 public class RankedCard extends Card {
     private final Rank rank;

@@ -1,3 +1,9 @@
+package OldMaidGame;
+
+import OldMaidGame.Cards.Card;
+import OldMaidGame.CardsManagment.CustomKey;
+import OldMaidGame.CardsManagment.HandIterator;
+
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +23,7 @@ public class InputOutputManager {
         System.out.println("------------ Game started ------------");
         System.out.println("No. of players : " + noOfPlayers);
         System.out.println("No. of Cards : " + noOfCards);
-        System.out.println("First ,discarding matching cards simultaneously, then start taking turns  : ");
+        System.out.println("All players will discard their matching cards simultaneously, then start taking turns  : ");
     }
     public int readNoOfPlayers(){
         System.out.println("Please enter the number of players (2-10)");

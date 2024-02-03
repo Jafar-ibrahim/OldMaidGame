@@ -1,3 +1,7 @@
+package OldMaidGame.CardsManagment;
+
+import OldMaidGame.Cards.Card;
+
 import java.util.*;
 
 public class HandIterator implements Iterator<Card> {

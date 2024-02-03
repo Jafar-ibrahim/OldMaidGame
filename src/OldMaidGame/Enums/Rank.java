@@ -1,4 +1,4 @@
-package Enums;
+package OldMaidGame.Enums;
 
 public enum Rank {
     JACK("J"),QUEEN("Q"),KING("K"),ACE("A"),Joker("Joker");
