@@ -23,7 +23,7 @@ public class Deck {
             instance = new Deck();
         return instance;
     }
-    public void initializeCards(int noOfCards){
+    public void initializeCards(int noOfPlayers){
 
         for(int i = 2 ; i <= 10 ; i++){
             cards.add(new NumeralCard(Color.BLACK, Suit.SPADES,i));
@@ -40,12 +40,11 @@ public class Deck {
                 cards.add(new RankedCard(Color.RED,Suit.HEARTS,rank));
             }
         }
-        int excessCards = 52 - calculateNeededCards(noOfCards);
+        int excessCards = calculateExcessCards(noOfPlayers);
         while(excessCards-- > 0){
             cards.remove(cards.size()-1);
         }
         cards.add(new RankedCard(Color.NONE,Suit.JOKER,Rank.Joker));
-
     }
 
     public void shuffle(){
@@ -56,10 +55,12 @@ public class Deck {
         return cards.remove(cards.size()-1);
     }
     public int calculateNeededCards(int noOfPlayers){
+        return  52 - calculateExcessCards(noOfPlayers);
+    }
+    public int calculateExcessCards(int noOfPlayers){
         int excessCards = 52 % noOfPlayers;
         if(excessCards % 2 != 0)
             excessCards--;
-
-        return  52 - excessCards;
+        return excessCards;
     }
 }
