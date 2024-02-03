@@ -59,9 +59,6 @@ public class GameManager {
         int n = random.nextInt(lastPlayer.getHand().getHandSize());
         return lastPlayer.getHand().giveNthCardFromHand(n);
     }
-    public synchronized boolean isMyTurn(Player player) {
-        return getCurrentPlayer() == player;
-    }
 
     public synchronized void waitForTurn(Player player) throws InterruptedException {
         while (!playerTurnQueue.isEmpty() && !playerTurnQueue.peek().equals(player)) {

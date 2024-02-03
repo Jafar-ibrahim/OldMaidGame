@@ -3,12 +3,13 @@ public class Player extends Thread{
     private final Hand hand;
     private boolean winner;
     private final GameManager gameManager;
-
+    private final InputOutputManager inputOutputManager;
 
     public Player(String name, GameManager gameManager) {
         super(name);
         this.gameManager = gameManager;
         this.hand = new Hand();
+        inputOutputManager = InputOutputManager.getInstance();
     }
 
     @Override
@@ -20,7 +21,7 @@ public class Player extends Thread{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        synchronized (gameManager) {
+
             while (!winner) {
                 try {
                     gameManager.waitForTurn(this);
@@ -31,52 +32,52 @@ public class Player extends Thread{
                     Thread.currentThread().interrupt();
                     break;
                 }
-                if (winner){
-                    gameManager.nextTurn();
-                    break;
-                }
+                // because I want to keep the monitor(lock) with the current player even if
+                // the game turn queue is modified during execution
+                synchronized (gameManager) {
+                    if (winner){
+                        gameManager.nextTurn();
+                        break;
+                    }
 
-                System.out.println("-------------------------------------");
-                System.out.println(getName() + "'s turn");
-                System.out.print(getName()+"'s cards : ");
-                hand.printHand();
+                    inputOutputManager.printPlayerTurnInfo(this);
 
-                if (gameManager.checkIfPlayerLost(this)) {
-                    break;
-                }
-                Card chosenCard = gameManager.drawCardFromLastPlayer();
+                    if (gameManager.checkIfPlayerLost(this)) {
+                        break;
+                    }
+                    Card chosenCard = gameManager.drawCardFromLastPlayer();
 
-                CustomKey chosenCardKey = new CustomKey(chosenCard);
-                hand.addToHand(chosenCard);
-                System.out.println("Drew " + chosenCard + " from " + gameManager.getLastPlayerInQueue().getName());
+                    CustomKey chosenCardKey = new CustomKey(chosenCard);
+                    hand.addToHand(chosenCard);
 
+                    inputOutputManager.printDrawnCard(chosenCard, gameManager.getLastPlayerInQueue());
 
-                if (hand.hasMatchFor(chosenCardKey)) {
-                    hand.discardMatchingPair(this,chosenCardKey);
-                    checkForWin();
-                }
-                if (Card.isTheJoker(chosenCard)) {
-                    gameManager.setLoser(this);
-                }
+                    if (hand.hasMatchFor(chosenCardKey)) {
+                        hand.discardMatchingPair(this,chosenCardKey);
+                        checkForWin();
+                    }
+                    if (Card.isTheJoker(chosenCard)) {
+                        gameManager.setLoser(this);
+                    }
 
-                // store the last player before the current thread becomes the last one after
-                // appending itself again
-                Player lastPlayer = gameManager.getLastPlayerInQueue();
-                if (!winner)
-                    gameManager.appendPlayerToQueue(this);
+                    // store the last player before the current thread becomes the last one after
+                    // appending itself again
+                    Player lastPlayer = gameManager.getLastPlayerInQueue();
+                    if (!winner)
+                        gameManager.appendPlayerToQueue(this);
 
-                // in case this player took the last player's last card
-                if(lastPlayer.checkForWin())
-                    gameManager.consumeWinnerEmptyTurn(this,lastPlayer);
-                else
-                    gameManager.nextTurn();
+                    // in case this player took the last player's last card
+                    if(lastPlayer.checkForWin())
+                        gameManager.consumeWinnerEmptyTurn(this,lastPlayer);
+                    else
+                        gameManager.nextTurn();
             }
         }
     }
     public boolean checkForWin(){
         if(hand.discardedAllCards()){
             this.winner = true;
-            System.out.println("[Attention]  "+getName()+" discarded all his/her cards and is out of the play");
+            inputOutputManager.announcePlayerWin(getName());
             return true;
         }
         return false;

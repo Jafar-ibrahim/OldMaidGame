@@ -2,17 +2,19 @@ import java.util.*;
 
 public class Game extends Thread{
 
-    Deck deck;
+    private final Deck deck;
+    private final InputOutputManager inputOutputManager;
+    private final GameManager gameManager;
+
     public Game() {
         deck = Deck.getInstance();
+        inputOutputManager = InputOutputManager.getInstance();
+        gameManager = GameManager.getInstance();
     }
 
     @Override
     public void run() {
-        GameManager gameManager = GameManager.getInstance();
-
-        System.out.println("Please enter the number of players (2-10)");
-        int noOfPlayers = readIntegerInput(2,10);
+        int noOfPlayers = inputOutputManager.readNoOfPlayers();
 
         List<Player> players = new ArrayList<>();
         for(int i = 1 ; i <= noOfPlayers ; i++){
@@ -23,10 +25,7 @@ public class Game extends Thread{
         deck.shuffle();
 
         dealCards(players,deck);
-        System.out.println("------------ Game started ------------");
-        System.out.println("No. of players : " + gameManager.getNoOfPlayers());
-        System.out.println("No. of Cards : " + (deck.calculateNeededCards(noOfPlayers)+1));
-        System.out.println("First ,discarding matching cards simultaneously, then start taking turns  : ");
+        inputOutputManager.printGameStart(gameManager.getNoOfPlayers(),(deck.calculateNeededCards(noOfPlayers)+1));
         for(Player player : players){
             player.start();
         }
@@ -35,13 +34,8 @@ public class Game extends Thread{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("\n------------ Game Over ------------");
 
-        System.out.println("***********************************");
-        System.out.println("***********************************");
-        System.out.println("**    The Old Maid is "+ gameManager.getLoser().getName()+"   **");
-        System.out.println("***********************************");
-        System.out.println("***********************************");
+        inputOutputManager.announceLoser(gameManager.getLoser());
 
     }
 
@@ -58,22 +52,10 @@ public class Game extends Thread{
         Random random = new Random();
         players.get(random.nextInt(players.size())).getHand().addToHand(deck.getTopCard());
     }
-    public final int readIntegerInput(int min , int max){
-        Scanner scanner = new Scanner(System.in);
-        int input ;
-        while(true) {
-            try {
-                input = scanner.nextInt();
-                if (input >= min && input <= max)
-                    break;
-                else
-                    System.out.println("Please enter a number in the specified range("+min+"-"+max+")");
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input format , please enter a number :");
-            }finally {
-                scanner.nextLine();
-            }
-        }
-        return input;
+
+    public static void main(String[] args) {
+        Game game = new Game();
+        game.start();
     }
+
 }

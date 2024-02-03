@@ -6,10 +6,6 @@ public class CustomKey {
     private final Color color;
     private final String numberOrRank;
 
-    public CustomKey(Color color, String numberOrRank) {
-        this.color = color;
-        this.numberOrRank = numberOrRank;
-    }
     public CustomKey(Card card){
         this.color = card.getColor();
         this.numberOrRank = Card.getNumberOrRank(card);
