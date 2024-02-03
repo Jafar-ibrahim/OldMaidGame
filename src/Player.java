@@ -14,6 +14,12 @@ public class Player extends Thread{
     @Override
     public void run() {
         hand.findMatchesAndDiscard(this);
+        try {
+            // to ensure that the method above concludes before starting the turns
+            sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         synchronized (gameManager) {
             while (!winner) {
                 try {
