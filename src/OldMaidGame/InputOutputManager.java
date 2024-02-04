@@ -20,9 +20,16 @@ public class InputOutputManager {
     }
 
     public void printGameStart(int noOfPlayers , int noOfCards){
+        int noOfCardsPerPlayer = (noOfCards-1) / noOfPlayers;
         System.out.println("------------ Game started ------------");
-        System.out.println("No. of players : " + noOfPlayers);
+        System.out.println("No. of Players : " + noOfPlayers);
         System.out.println("No. of Cards : " + noOfCards);
+        System.out.print("No. of Cards per player : " + noOfCardsPerPlayer+" (and a Joker for one of the players)");
+        if((noOfCards-1) % noOfPlayers != 0)
+            System.out.println(" (except for one player who will get "+(noOfCardsPerPlayer+1)+" cards)");
+        else
+            System.out.println();
+
         System.out.println("All players will discard their matching cards simultaneously, then start taking turns  : ");
     }
     public int readNoOfPlayers(){

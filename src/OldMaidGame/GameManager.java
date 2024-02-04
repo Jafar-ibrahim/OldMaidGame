@@ -44,7 +44,6 @@ public class GameManager {
     }
     public synchronized void removePlayerFromQueue(Player player) {
         playerTurnQueue.remove(player);
-        notifyAll();
     }
     public synchronized void initializeTurnQueue(List<Player> players) {
         playerTurnQueue.addAll(players);
@@ -54,9 +53,8 @@ public class GameManager {
         playerTurnQueue.remove();
         notifyAll();
     }
-    public synchronized Card drawCardFromLastPlayer(){
+    public Card drawCardFromLastPlayer(){
         Player lastPlayer = getLastPlayerInQueue();
-        if(lastPlayer.getHand().discardedAllCards()) return null;
         Random random = new Random();
         int n = random.nextInt(lastPlayer.getHand().getHandSize());
         return lastPlayer.getHand().giveNthCardFromHand(n);
@@ -79,6 +77,7 @@ public class GameManager {
         return playerTurnQueue.getLast();
     }
     public void advancePlayerForward(Player player){
+        removePlayerFromQueue(player);
         playerTurnQueue.addFirst(player);
     }
 
@@ -86,9 +85,8 @@ public class GameManager {
     // he'll still be waiting for his turn ,so his turn must be consumed
     // instantly so that no other player will mistake him for an active player and try
     // to draw a card from him. ( to avoid another player acting before the winning player exits)
-    public void consumeWinnerEmptyTurn(Player currentPlayer, Player winner){
+    public synchronized void consumeWinnerEmptyTurn(Player currentPlayer, Player winner){
         removePlayerFromQueue(currentPlayer);
-        removePlayerFromQueue(winner);
         advancePlayerForward(winner);
         notifyAll();
     }
