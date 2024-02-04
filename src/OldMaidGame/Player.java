@@ -45,8 +45,10 @@ public class Player extends Thread{
 
                 inputOutputManager.printPlayerTurnInfo(this);
 
-                if(gameManager.gameOver())
+                if(gameManager.gameOver()) {
+                    gameManager.setLoser(this);
                     break;
+                }
 
                 Card chosenCard = gameManager.drawCardFromLastPlayer();
                 CustomKey chosenCardKey = new CustomKey(chosenCard);
@@ -57,9 +59,6 @@ public class Player extends Thread{
                 if (hand.hasMatchFor(chosenCardKey)) {
                     hand.discardMatchingPair(this,chosenCardKey);
                     checkForWin();
-                }
-                if (Card.isTheJoker(chosenCard)) {
-                    gameManager.setLoser(this);
                 }
 
                 // store the last player before the current thread becomes the last one after
