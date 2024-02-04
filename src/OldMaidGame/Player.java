@@ -35,45 +35,43 @@ public class Player extends Thread{
                 Thread.currentThread().interrupt();
                 break;
             }
-            // because I want to keep the monitor(lock) with the current player even if
-            // the game turn queue is modified during execution
-            synchronized (gameManager) {
-                if (winner){
-                    gameManager.nextTurn();
-                    break;
-                }
 
-                inputOutputManager.printPlayerTurnInfo(this);
+            if (winner) {
+                gameManager.nextTurn();
+                break;
+            }
 
-                if(gameManager.gameOver()) {
-                    gameManager.setLoser(this);
-                    break;
-                }
+            inputOutputManager.printPlayerTurnInfo(this);
 
-                Card chosenCard = gameManager.drawCardFromLastPlayer();
-                CustomKey chosenCardKey = new CustomKey(chosenCard);
-                hand.addToHand(chosenCard);
+            if (gameManager.gameOver()) {
+                gameManager.setLoser(this);
+                break;
+            }
 
-                inputOutputManager.printDrawnCard(chosenCard, gameManager.getLastPlayerInQueue());
+            Card chosenCard = gameManager.drawCardFromLastPlayer();
+            CustomKey chosenCardKey = new CustomKey(chosenCard);
+            hand.addToHand(chosenCard);
 
-                if (hand.hasMatchFor(chosenCardKey)) {
-                    hand.discardMatchingPair(this,chosenCardKey);
-                    checkForWin();
-                }
+            inputOutputManager.printDrawnCard(chosenCard, gameManager.getLastPlayerInQueue());
 
-                // store the last player before the current thread becomes the last one after
-                // appending itself again
-                Player lastPlayer = gameManager.getLastPlayerInQueue();
-                if (!winner)
-                    gameManager.appendPlayerToQueue(this);
+            if (hand.hasMatchFor(chosenCardKey)) {
+                hand.discardMatchingPair(this, chosenCardKey);
+                checkForWin();
+            }
 
-                // in case this player took the last player's last card
-                if(lastPlayer.checkForWin())
-                    gameManager.consumeWinnerEmptyTurn(this,lastPlayer);
-                else
-                    gameManager.nextTurn();
+            // store the last player before the current thread becomes the last one after
+            // appending itself again
+            Player lastPlayer = gameManager.getLastPlayerInQueue();
+            if (!winner)
+                gameManager.appendPlayerToQueue(this);
+
+            // in case this player took the last player's last card
+            if (lastPlayer.checkForWin())
+                gameManager.consumeWinnerEmptyTurn(this, lastPlayer);
+            else
+                gameManager.nextTurn();
+
         }
-    }
     }
     public boolean checkForWin(){
         if(hand.discardedAllCards()){
