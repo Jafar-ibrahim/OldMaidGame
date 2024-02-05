@@ -27,11 +27,4 @@ public abstract class Card {
     public void setSuit(Suit suit) {
         this.suit = suit;
     }
-
-    public static String getNumberOrRank(Card card){
-        if(card instanceof NumeralCard)
-            return Integer.toString(((NumeralCard) card).getNumber());
-        else
-            return ((RankedCard) card).getRank().toString();
-    }
 }

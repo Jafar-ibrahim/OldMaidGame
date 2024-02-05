@@ -1,6 +1,8 @@
 package OldMaidGame.CardsManagment;
 
 import OldMaidGame.Cards.Card;
+import OldMaidGame.Cards.NumeralCard;
+import OldMaidGame.Cards.RankedCard;
 import OldMaidGame.Enums.Color;
 
 import java.util.Objects;
@@ -11,7 +13,13 @@ public class CustomHandMapKey {
 
     public CustomHandMapKey(Card card){
         this.color = card.getColor();
-        this.numberOrRank = Card.getNumberOrRank(card);
+        this.numberOrRank = getNumberOrRank(card);
+    }
+    public static String getNumberOrRank(Card card){
+        if(card instanceof NumeralCard)
+            return Integer.toString(((NumeralCard) card).getNumber());
+        else
+            return ((RankedCard) card).getRank().toString();
     }
 
     @Override
