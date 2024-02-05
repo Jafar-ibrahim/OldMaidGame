@@ -1,7 +1,7 @@
 package OldMaidGame;
 
 import OldMaidGame.Cards.Card;
-import OldMaidGame.CardsManagment.CustomKey;
+import OldMaidGame.CardsManagment.CustomHandMapKey;
 import OldMaidGame.CardsManagment.HandIterator;
 
 import java.util.InputMismatchException;
@@ -80,7 +80,7 @@ public class InputOutputManager {
         return input;
     }
 
-    public void printHand(Map<CustomKey, List<Card>> hand){
+    public void printHand(Map<CustomHandMapKey, List<Card>> hand){
         HandIterator it = new HandIterator(hand);
         System.out.print("{ ");
         while (it.hasNext()){

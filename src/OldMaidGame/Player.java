@@ -1,7 +1,7 @@
 package OldMaidGame;
 
 import OldMaidGame.Cards.Card;
-import OldMaidGame.CardsManagment.CustomKey;
+import OldMaidGame.CardsManagment.CustomHandMapKey;
 import OldMaidGame.CardsManagment.Hand;
 
 public class Player extends Thread{
@@ -49,7 +49,7 @@ public class Player extends Thread{
             }
 
             Card chosenCard = gameManager.drawCardFromLastPlayer();
-            CustomKey chosenCardKey = new CustomKey(chosenCard);
+            CustomHandMapKey chosenCardKey = new CustomHandMapKey(chosenCard);
             hand.addToHand(chosenCard);
 
             inputOutputManager.printDrawnCard(chosenCard, gameManager.getLastPlayerInQueue());

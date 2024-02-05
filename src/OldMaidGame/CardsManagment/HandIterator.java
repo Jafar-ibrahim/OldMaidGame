@@ -6,10 +6,10 @@ import java.util.*;
 
 public class HandIterator implements Iterator<Card> {
 
-    private final Iterator<Map.Entry<CustomKey, List<Card>>> mapIterator;
+    private final Iterator<Map.Entry<CustomHandMapKey, List<Card>>> mapIterator;
     private Iterator<Card> currentListIterator = null;
 
-    public HandIterator(Map<CustomKey, List<Card>> hand) {
+    public HandIterator(Map<CustomHandMapKey, List<Card>> hand) {
         this.mapIterator = hand.entrySet().iterator();
     }
 
