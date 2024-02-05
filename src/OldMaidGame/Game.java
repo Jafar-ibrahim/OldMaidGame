@@ -5,6 +5,7 @@ import OldMaidGame.CardsManagment.Deck;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Game extends Thread{
 
@@ -36,8 +37,12 @@ public class Game extends Thread{
             executor.execute(player);
         }
         executor.shutdown();
-        while (!executor.isTerminated()) {}
-
+        try {
+            // no game should take more than 7 minutes (when adding 1 second stop between actions)
+            executor.awaitTermination(7, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         inputOutputManager.announceLoser(gameManager.getLoser());
 
     }
